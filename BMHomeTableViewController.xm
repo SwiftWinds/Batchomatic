@@ -1,9 +1,17 @@
+//
+//  BMHomeTableViewController.m
+//  Batchomatic
+//  
+//  Created by Capt Inc on 2020-06-01
+//  Copyright © 2020 Capt Inc. All rights reserved.
+//
+
 #import "Headers/Batchomatic.h"
 #import "Headers/BMHomeTableViewController.h"
 #import "Headers/BMInstallTableViewController.h"
 #import "Headers/BMRepackTableViewController.h"
 
-@implementation BMHomeTableViewController //The main Batchomatic screen where you choose what feature to use
+@implementation BMHomeTableViewController // The main Batchomatic screen where you choose what feature to use
 - (NSString *)versionNumber {
     return @"v4.3.1";
 }
@@ -13,7 +21,8 @@
     Batchomatic *bm = [Batchomatic sharedInstance];
     bm.bm_BMHomeTableViewController = self;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) { //must use dispatch_async to prevent the UI from freezing
+    // must use dispatch_async to prevent the UI from freezing
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
         [bm determineInfoAboutDeb];
         [bm loadListOfCurrentlyInstalledTweaks];
     });
@@ -24,19 +33,23 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [Batchomatic sharedInstance].bm_currentBMController = self; //this variable is whatever Batchomatic view controller is currently on-screen
-    [self addVersionNumberFooter]; //when this was in viewDidLoad, the version number wasn't being centered on iPads, but putting this in viewWillAppear fixed it
+    // this variable is whatever Batchomatic view controller is currently on-screen
+    [Batchomatic sharedInstance].bm_currentBMController = self;
+    // when this was in viewDidLoad, the version number wasn't being centered on iPads, but putting this in viewWillAppear fixed it
+    [self addVersionNumberFooter];
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-- (void)createNavBar { //Creates the main navigation bar with a custom icon next to the large title
+// Creates the main navigation bar with a custom icon next to the large title
+- (void)createNavBar {
     self.navigationItem.title = @"Batchomatic";
     UINavigationBar *navBar = self.navigationController.navigationBar;
     navBar.prefersLargeTitles = YES;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(didTapBackButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(didTapHelpButton)];
     
-    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/Batchomatic/Icon.bundle"]; //custom view in UINavigationBarLargeTitleView for the icon
+    // custom view in UINavigationBarLargeTitleView for the icon
+    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/Batchomatic/Icon.bundle"];
     UIImage *icon = [[UIImage imageNamed:@"Icon" inBundle:bundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imgView = [[UIImageView alloc] initWithImage:icon];
     
@@ -66,7 +79,8 @@
     self.tableView = tableView;
 }
 
-- (void)addVersionNumberFooter { //Add the version number as footer of the UITableView
+// Add the version number as footer of the UITableView
+- (void)addVersionNumberFooter {
     UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 28)];
     UILabel *label = [[UILabel alloc] initWithFrame:footer.frame];
     label.text = [self versionNumber];
@@ -92,11 +106,14 @@
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section { //Add section separators and hide the cell separator lines of extraneous/unused cells
+// Add section separators and hide the cell separator lines of extraneous/unused cells
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [[UIView alloc] init];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section { //Make the version number at the bottom appear close to my UITableView instead of floating in the middle of nowhere
+// Make the version number at the bottom appear close to my UITableView
+// instead of floating in the middle of nowhere
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 2) {
         return 7;
     }
@@ -116,25 +133,30 @@
     cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     
-    if (indexPath.section == 0) { //top section
+    // top section
+    if (indexPath.section == 0) {
         NSArray *cellTitles = @[@"Create online .deb", @"Create offline .deb", @"Install .deb"];
         cell.textLabel.text = [cellTitles objectAtIndex:indexPath.row];
     }
-    else if (indexPath.section == 1) { //middle section
+    // middle section
+    else if (indexPath.section == 1) {
         NSArray *cellTitles = @[@"Repack tweak to .deb", @"Remove all repos", @"Remove all tweaks"];
         cell.textLabel.text = [cellTitles objectAtIndex:indexPath.row];
     }
-    else { //bottom section
+    // bottom section
+    else {
         cell.textLabel.text = @"Respring";
     }
     
-    cell.selectionStyle = UITableViewCellSelectionStyleDefault; //adds the select-then-immediately-deselect animation when tapping on a row
+    // adds the select-then-immediately-deselect animation when tapping on a row
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES]; //this is also needed for that select-then-immediately-deselect animation
+    // this is also needed for that select-then-immediately-deselect animation
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             [self didTapEitherCreateDebButton:1];
@@ -165,25 +187,30 @@
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-- (void)didTapEitherCreateDebButton:(int)type { //Does some prep work before actually creating the .deb
+// Does some prep work before actually creating the .deb
+- (void)didTapEitherCreateDebButton:(int)type {
     Batchomatic *bm = [Batchomatic sharedInstance];
     NSString *typeOfDebMsg;
-    if (type == 1) { //type 1 means an online .deb
+    // type 1 means an online .deb
+    if (type == 1) {
         bm.maxSteps = 1;
         typeOfDebMsg = @"Creating your online .deb....\n";
     }
-    else { //type 2 means an offline .deb
+    // type 2 means an offline .deb
+    else {
         bm.maxSteps = 3;
         typeOfDebMsg = @"Creating your offline .deb....\n";
     }
     
-    NSString *motherMessage = [bm showProcessingDialog:typeOfDebMsg includeStage:true startingStep:1 autoPresent:false];
+    NSString *motherMessage = [bm showProcessingDialog:typeOfDebMsg includeStage:YES startingStep:1 autoPresent:NO];
     [self presentViewController:bm.processingDialog animated:YES completion:^{
         [bm createDeb:type withMotherMessage:motherMessage];
     }];
 }
 
-- (void)didTapInstallDebButton { //Shows the Install options screen (BMInstallTableViewController) if your .deb is currently installed
+// Shows the Install options screen (BMInstallTableViewController)
+// if your .deb is currently installed
+- (void)didTapInstallDebButton {
     Batchomatic *bm = [Batchomatic sharedInstance];
     if (bm.debIsInstalled) {
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[BMInstallTableViewController alloc] init]];
@@ -202,24 +229,28 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)didTapEitherRemoveAllButton:(int)type { //Asks the user if they want to keep utiity repos and BigBoss when removing all repos. Also handles asking to keep package managers, Filza, and Batchomatic itself when removing all tweaks
+// Asks the user if they want to keep utiity repos and
+// BigBoss when removing all repos. Also handles asking to keep package managers, Filza, and Batchomatic itself when removing all tweaks
+- (void)didTapEitherRemoveAllButton:(int)type {
     Batchomatic *bm = [Batchomatic sharedInstance];
     bm.maxSteps = 1;
     
     NSString *infoMsg;
     NSString *processingMsg;
-    if (type == 1) { //type 1 means remove all repos
+    // type 1 means remove all repos
+    if (type == 1) {
         infoMsg = @"When OFF, utility repos and BigBoss will stay";
         processingMsg = @"Removing repos....";
     }
-    else { //type 2 means remove all tweaks
+    // type 2 means remove all tweaks
+    else {
         infoMsg = @"When OFF, Zebra/Installer/Filza/Batchomatic will stay";
         processingMsg = @"Removing tweaks....";
     }
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Batchomatic" message:infoMsg preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *proceedAction = [UIAlertAction actionWithTitle:@"Proceed" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [bm showProcessingDialog:processingMsg includeStage:true startingStep:1 autoPresent:false];
+        [bm showProcessingDialog:processingMsg includeStage:YES startingStep:1 autoPresent:NO];
         [bm.bm_BMHomeTableViewController presentViewController:bm.processingDialog animated:YES completion:^{
             if (type == 1) {
                 [bm removeAllRepos];
@@ -238,7 +269,7 @@
 }
 
 - (void)didTapRespringButton {
-    [[Batchomatic sharedInstance] endProcessingDialog:nil transition:false shouldOpenBMHomeViewControllerFirst:false];
+    [[Batchomatic sharedInstance] endProcessingDialog:nil transition:NO shouldOpenBMHomeViewControllerFirst:NO];
 }
 
 - (void)didTapBackButton {
