@@ -42,7 +42,7 @@ extern int refreshesCompleted;
 
 //--------------------------------------------------------------------------------------------------------------------------
 //Zebra
-%hook ZBSearchViewController
+%hook ZBSearchTableViewController
 - (void)viewDidLoad {
     %orig;
     [Batchomatic placeButton:self];
@@ -54,8 +54,8 @@ extern int refreshesCompleted;
     bm.motherClass = self;
     bm.zebra_ZBTabBarController = (ZBTabBarController *)self.tabBarController; //this saves the instance of ZBTabBarController for later use
     UINavigationController *ctrl = self.tabBarController.viewControllers[1];
-    bm.zebra_ZBRepoListTableViewController = (ZBRepoListTableViewController *)ctrl.viewControllers[0]; //and this saves the instance of ZBRepoListTableViewController
-    [bm.zebra_ZBRepoListTableViewController viewDidLoad];
+    bm.zebra_ZBSourceListTableViewController = (ZBSourceListTableViewController *)ctrl.viewControllers[0]; //and this saves the instance of ZBSourceListTableViewController
+    [bm.zebra_ZBSourceListTableViewController viewDidLoad];
     [Batchomatic openMainScreen:self];
 }
 %end
@@ -65,16 +65,6 @@ extern int refreshesCompleted;
     %orig;
     if (refreshesCompleted != 0) {
         [[Batchomatic sharedInstance] processingReposDidFinish:false]; //Zebra displays a pop-up when adding repos, which dismisses my UIAlertController. so, we need to create a new UIAlertController by passing 'false'
-    }
-}
-%end
-
-%hook ZBTabBarController
-- (void)setRepoRefreshIndicatorVisible:(BOOL)visible { //Zebra calls this method when it finishes removing repos
-    %orig;
-    Batchomatic *bm = [Batchomatic sharedInstance];
-    if (bm.isRemovingRepos) {
-        [bm processingReposDidFinish:true];
     }
 }
 %end
