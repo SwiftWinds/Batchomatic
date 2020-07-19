@@ -1,6 +1,13 @@
-//Cydia
+//
+//  Tweak.h
+//  Headers
+//  
+//  Created by Capt Inc on 2020-05-31
+//  Copyright © 2020 Capt Inc. All rights reserved.
+//
+
+// Cydia
 @interface SearchController : UIViewController
-- (void)viewDidLoad;
 - (void)startBatchomatic;
 @end
 
@@ -9,7 +16,7 @@
 - (void)_loaded;
 - (void)addSource:(NSDictionary *)dictionary;
 - (BOOL)addTrivialSource:(NSString *)href;
-- (bool)requestUpdate;
+- (BOOL)requestUpdate;
 - (void)resolve;
 - (void)queue;
 @end
@@ -36,9 +43,8 @@
 @end
 
 //--------------------------------------------------------------------------------------------------------------------------
-//Zebra
+// Zebra
 @interface ZBSearchTableViewController : UITableViewController
-- (void)viewDidLoad;
 - (void)startBatchomatic;
 @end
 
@@ -89,9 +95,8 @@ typedef enum {
 @end
 
 //--------------------------------------------------------------------------------------------------------------------------
-//Sileo
+// Sileo
 @interface _TtC5Sileo25PackageListViewController : UIViewController
-- (void)viewDidLoad;
 - (void)startBatchomatic;
 @end
 
@@ -124,7 +129,7 @@ typedef enum {
 @property (nonatomic, copy) NSArray *installations;
 + (instancetype)shared;
 - (void)addWithPackage:(_TtC5Sileo7Package *)thePackage queue:(int)typeOfQueue;
-- (void)reloadDataWithRecheckPackages:(bool)recheck;
+- (void)reloadDataWithRecheckPackages:(BOOL)recheck;
 @end
 
 @interface TabBarController : UITabBarController
@@ -133,14 +138,13 @@ typedef enum {
 @end
 
 //--------------------------------------------------------------------------------------------------------------------------
-//Installer
+// Installer
 @interface SearchViewController : UIViewController
-- (void)viewDidLoad;
 - (void)startBatchomatic;
 @end
 
 @interface ManageViewController : UIViewController
-- (void)addSourceWithString:(NSString *)repoURL withHttpApproval:(bool)approval;
+- (void)addSourceWithString:(NSString *)repoURL withHttpApproval:(BOOL)approval;
 @end
 
 @interface ATTabBarController : UITabBarController
@@ -157,7 +161,7 @@ typedef enum {
 
 @interface ATRPackages : NSObject
 - (ATRPackage *)packageWithIdentifier:(NSString *)packageIdentifier;
-- (bool)packageIsInstalled:(NSString *)packageIdentifier;
+- (BOOL)packageIsInstalled:(NSString *)packageIdentifier;
 - (void)setPackage:(NSString *)packageIdentifier inTheQueue:(BOOL)queue versionToQueue:(NSString *)version operation:(NSUInteger)operation;
 @end
 

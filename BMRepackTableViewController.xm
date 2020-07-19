@@ -1,7 +1,15 @@
+//
+//  BMRepackTableViewController.m
+//  Batchomatic
+//  
+//  Created by Capt Inc on 2020-06-01
+//  Copyright © 2020 Capt Inc. All rights reserved.
+//
+
 #import "Headers/Batchomatic.h"
 #import "Headers/BMRepackTableViewController.h"
 
-@implementation BMRepackTableViewController //The Repack deb screen
+@implementation BMRepackTableViewController // The Repack deb screen
 - (void)viewDidLoad {
     [super viewDidLoad];
     Batchomatic *bm = [Batchomatic sharedInstance];
@@ -31,7 +39,8 @@
         spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     }
     
-    spinner.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin); //center the UIActivityIndicator
+    // center the UIActivityIndicator
+    spinner.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin);
     CGFloat height = (CGRectGetHeight(self.view.bounds) / 2) - self.navigationController.navigationBar.frame.size.height;
     spinner.center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2, height);
     
@@ -55,7 +64,8 @@
     return [[Batchomatic sharedInstance].currentlyInstalledTweaks count];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section { //Hide the cell separator lines of extraneous/unused cells
+// Hide the cell separator lines of extraneous/unused cells
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [[UIView alloc] init];
 }
 
@@ -63,7 +73,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-    if (!cell || !cell.detailTextLabel) { //in order to make detailTextLabel work, you must check if cell is nil or if cell.detailTextLabel is nil
+    // in order to make detailTextLabel work, you must check if cell is nil or
+    // if cell.detailTextLabel is nil
+    if (!cell || !cell.detailTextLabel) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     Batchomatic *bm = [Batchomatic sharedInstance];
@@ -71,7 +83,8 @@
     
     cell.textLabel.font = [UIFont systemFontOfSize:18];
     cell.detailTextLabel.font = [UIFont systemFontOfSize:12];
-    cell.detailTextLabel.textColor = [UIColor systemGrayColor]; //make the package ID text a light gray
+    // make the package ID text a light gray
+    cell.detailTextLabel.textColor = [UIColor systemGrayColor];
     cell.textLabel.text = [tweakInfo objectForKey:@"name"];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"\t%@", [tweakInfo objectForKey:@"packageID"]];
     
@@ -92,7 +105,7 @@
     Batchomatic *bm = [Batchomatic sharedInstance];
     bm.maxSteps = 1;
     NSString *msg = [NSString stringWithFormat:@"Repacking tweak to .deb....\n%@", packageID];
-    [bm showProcessingDialog:msg includeStage:true startingStep:1 autoPresent:false];
+    [bm showProcessingDialog:msg includeStage:YES startingStep:1 autoPresent:NO];
     [self presentViewController:bm.processingDialog animated:YES completion:^{
         [bm repackTweakWithIdentifier:packageID];
     }];

@@ -1,7 +1,15 @@
+//
+//  BMInstallTableViewController.m
+//  Batchomatic
+//  
+//  Created by Capt Inc on 2020-06-01
+//  Copyright © 2020 Capt Inc. All rights reserved.
+//
+
 #import "Headers/Batchomatic.h"
 #import "Headers/BMInstallTableViewController.h"
 
-@implementation BMInstallTableViewController //The installation options screen
+@implementation BMInstallTableViewController // The installation options screen
 - (void)viewDidLoad {
     [super viewDidLoad];
     Batchomatic *bm = [Batchomatic sharedInstance];
@@ -40,7 +48,8 @@
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section { //Hide the cell separator lines of extraneous/unused cells
+// Hide the cell separator lines of extraneous/unused cells
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [[UIView alloc] init];
 }
 
@@ -55,7 +64,8 @@
     
     cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     
-    if (indexPath.section == 0) { //put a UISwitch in each row of the top section
+    // put a UISwitch in each row of the top section
+    if (indexPath.section == 0) {
         NSArray *cellTitles = @[@"Install preferences", @"Install hosts file", @"Install saved .debs", @"Add repos", @"Queue tweaks", @"Install offline tweaks"];
         cell.textLabel.text = [cellTitles objectAtIndex:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -63,43 +73,49 @@
         UISwitch *toggle = [[UISwitch alloc] initWithFrame:CGRectZero];
         toggle.tag = indexPath.row;
         [toggle setOn:YES animated:YES];
-        bm.prefsSwitchStatus = true;
-        bm.hostsSwitchStatus = true;
-        bm.savedDebsSwitchStatus = true;
+        bm.prefsSwitchStatus = YES;
+        bm.hostsSwitchStatus = YES;
+        bm.savedDebsSwitchStatus = YES;
         
-        if (bm.debIsOnline) { //if the .deb is online mode, the offline switch gets greyed out
+        // if the .deb is online mode, the offline switch gets greyed out
+        if (bm.debIsOnline) {
             if (indexPath.row == 3 || indexPath.row == 4) {
                 [toggle setOn:YES animated:YES];
-                bm.reposSwitchStatus = true;
-                bm.tweaksSwitchStatus = true;
+                bm.reposSwitchStatus = YES;
+                bm.tweaksSwitchStatus = YES;
             }
             if (indexPath.row == 5) {
-                [toggle setOn:NO animated:YES]; //turn the switch off
-                bm.offlineTweaksSwitchStatus = false;
-                toggle.enabled = NO; //grey out the switch
-                cell.textLabel.alpha = 0.439216f; //grey out the label
+                // turn the switch off
+                [toggle setOn:NO animated:YES];
+                bm.offlineTweaksSwitchStatus = NO;
+                // grey out the switch
+                toggle.enabled = NO;
+                // grey out the label
+                cell.textLabel.alpha = 0.439216f;
                 cell.userInteractionEnabled = NO;
             }
         }
-        else { //and vice versa if the .deb is offline mode
+        // and vice versa if the .deb is offline mode
+        else {
             if (indexPath.row == 3 || indexPath.row == 4) {
                 [toggle setOn:NO animated:YES];
-                bm.reposSwitchStatus = false;
-                bm.tweaksSwitchStatus = false;
+                bm.reposSwitchStatus = NO;
+                bm.tweaksSwitchStatus = NO;
                 toggle.enabled = NO;
                 cell.textLabel.alpha = 0.439216f;
                 cell.userInteractionEnabled = NO;
             }
             if (indexPath.row == 5) {
                 [toggle setOn:YES animated:YES];
-                bm.offlineTweaksSwitchStatus = true;
+                bm.offlineTweaksSwitchStatus = YES;
             }
         }
         
-        [toggle addTarget:bm action:@selector(toggleTapped:) forControlEvents:UIControlEventValueChanged]; //"- (void)toggleTapped:" will update the corresponding boolean variable whenever the switch is tapped
+        [toggle addTarget:bm action:@selector(toggleTapped:) forControlEvents:UIControlEventValueChanged]; //"- (void)toggleTapped:" will update the corresponding BOOLean variable whenever the switch is tapped
         cell.accessoryView = toggle;
     }
-    else { //customizes the "Proceed" button/row
+    // customizes the "Proceed" button/row
+    else {
         NSArray *cellTitles = @[@"Proceed"];
         cell.textLabel.text = [cellTitles objectAtIndex:indexPath.row];
         if (indexPath.row == 0) {
@@ -123,8 +139,9 @@
 //--------------------------------------------------------------------------------------------------------------------------
 - (void)didTapProceedButton {
     Batchomatic *bm = [Batchomatic sharedInstance];
-    [bm calculateMaxStepsForInstalling]; //must do some prep work before actually installing the .deb
-    [bm showProcessingDialog:@"Preparing...." includeStage:true startingStep:0 autoPresent:false];
+    // must do some prep work before actually installing the .deb
+    [bm calculateMaxStepsForInstalling];
+    [bm showProcessingDialog:@"Preparing...." includeStage:YES startingStep:0 autoPresent:NO];
     [self presentViewController:bm.processingDialog animated:YES completion:^{
         [bm installDeb];
     }];
